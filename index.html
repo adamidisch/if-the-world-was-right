@@ -38,18 +38,19 @@ button{font:inherit}
 .photo-layer.swipe-in-left{animation:swipeInLeft .52s var(--ease) both}
 .photo-layer.swipe-out-left{animation:swipeOutLeft .52s var(--ease) both}
 .photo-layer.swipe-out-right{animation:swipeOutRight .52s var(--ease) both}
+.photo-layer.final-breathe{animation:finalBreathe 5s cubic-bezier(.45,.05,.55,.95) infinite}
 @keyframes swipeInRight{0%{opacity:0;transform:translate3d(5%,0,0)}100%{opacity:1;transform:translate3d(0,0,0)}}
 @keyframes swipeInLeft{0%{opacity:0;transform:translate3d(-5%,0,0)}100%{opacity:1;transform:translate3d(0,0,0)}}
 @keyframes swipeOutLeft{0%{opacity:1;transform:translate3d(0,0,0)}100%{opacity:0;transform:translate3d(-3.5%,0,0)}}
 @keyframes swipeOutRight{0%{opacity:1;transform:translate3d(0,0,0)}100%{opacity:0;transform:translate3d(3.5%,0,0)}}
+@keyframes finalBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
 .blackout{position:absolute;inset:0;z-index:8;background:#000;opacity:0;pointer-events:none;transition:opacity 1s var(--ease)}
 .blackout.on{opacity:1}
 .quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 22% 30%,rgba(76,137,157,.23),transparent 34%),radial-gradient(circle at 79% 68%,rgba(192,111,67,.18),transparent 32%),radial-gradient(circle at 56% 50%,rgba(115,113,158,.13),transparent 42%),#07090d;opacity:0;visibility:hidden;transition:opacity .9s var(--ease),visibility .9s}
 .quote.show{opacity:1;visibility:visible}
 .quote-inner{width:min(780px,calc(100% - 48px));text-align:center}
 .quote-kicker{font-size:10px;font-weight:650;letter-spacing:.2em;color:rgba(255,255,255,.38);margin-bottom:22px}
-.quote h1{margin:0;font-size:clamp(36px,5vw,64px);line-height:.96;letter-spacing:-.055em;font-weight:800;text-wrap:balance;color:#dce8ec;background-image:url('assets/after-02.webp');background-size:138% auto;background-position:50% 42%;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:.35px rgba(238,235,220,.28);filter:drop-shadow(0 10px 26px rgba(0,0,0,.42));animation:titleArtwork 10s ease-in-out infinite alternate}
-@keyframes titleArtwork{from{background-position:44% 38%}to{background-position:58% 60%}}
+.quote h1{margin:0;font-family:"Iowan Old Style",Baskerville,"Palatino Linotype",Palatino,Georgia,serif;font-size:clamp(34px,4.65vw,58px);line-height:1.08;letter-spacing:.008em;word-spacing:.08em;font-weight:700;text-wrap:balance;color:#dce8ec;background-image:url('assets/after-02.webp');background-size:138% auto;background-position:50% 48%;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:.3px rgba(238,235,220,.32);filter:drop-shadow(0 10px 26px rgba(0,0,0,.42))}
 .quote-lead{max-width:560px;margin:22px auto 0;font-size:16px;line-height:1.45;letter-spacing:-.012em;color:rgba(255,255,255,.72);text-wrap:balance}
 .quote-rule{width:42px;height:1px;background:rgba(255,255,255,.22);margin:26px auto 18px}
 .quote-signoff{font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.3)}
@@ -95,7 +96,7 @@ button{font:inherit}
  .meta{left:14px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));padding:6px 8px;border-radius:999px;background:rgba(8,8,9,.34);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:8px}
  .swipe-hint{left:auto;right:14px;bottom:max(18px,calc(env(safe-area-inset-bottom) + 14px));transform:none;display:block;opacity:.5;font-size:8px}
  .footer{display:none}
- .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(32px,9.6vw,46px);line-height:1}.quote-lead{font-size:15px;line-height:1.46;margin-top:20px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
+ .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(30px,8.8vw,43px);line-height:1.1;letter-spacing:.012em}.quote-lead{font-size:15px;line-height:1.46;margin-top:20px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
  .grid{grid-template-columns:1fr 1fr}
 }
 @media(orientation:landscape) and (max-height:600px){
@@ -156,9 +157,10 @@ const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const wait=(ms,id)=>new Promise(r=>setTimeout(()=>r(id===runId),ms));
 function setMeta(n){current=n;kind.textContent=frames[n].type;count.textContent=String(n+1).padStart(2,'0')+' / 06';ambient.style.backgroundImage='url("'+frames[n].src+'")'}
 function paintLayer(el,n){el.src=frames[n].src;el.alt=frames[n].alt}
-function clearAnim(el){el.classList.remove('swipe-in-right','swipe-in-left','swipe-out-left','swipe-out-right','auto-enter')}
+function clearAnim(el){el.classList.remove('swipe-in-right','swipe-in-left','swipe-out-left','swipe-out-right','auto-enter','final-breathe')}
+function showFinalCue(el=layers[activeLayer]){if(current!==5)return;clearAnim(el);el.classList.add('final-breathe');kind.textContent='END';ui()}
 function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.removeAttribute('src');b.alt='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
-async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui()}
+async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui();if(n===5){const id=runId;if(await wait(reduce?20:6000,id))showFinalCue(to)}}
 function ui(){stage.classList.add('ui');clearTimeout(uiTimer);uiTimer=setTimeout(()=>stage.classList.remove('ui'),1300)}
 function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function toBlack(id,ms=1000){blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';blackout.classList.add('on');return wait(reduce?20:ms,id)}
@@ -167,8 +169,8 @@ async function play(){stop();const id=runId;auto=true;showInstant(0);blackout.cl
 for(let i=0;i<3;i++){if(!(await wait(4000,id)))return;if(!(await toBlack(id,1000)))return;if(i<2&&!(await fromBlack(i+1,id,650)))return}
 quote.classList.add('show');quote.setAttribute('aria-hidden','false');blackout.style.transitionDuration=reduce?'.01ms':'700ms';blackout.classList.remove('on');if(!(await wait(reduce?20:700,id)))return;if(!(await wait(6000,id)))return;
 blackout.style.transitionDuration='.01ms';blackout.classList.add('on');if(!(await wait(reduce?20:60,id)))return;quote.classList.remove('show');quote.setAttribute('aria-hidden','true');if(!(await wait(reduce?20:180,id)))return;
-for(let i=3;i<6;i++){const next=layers[1-activeLayer],old=layers[activeLayer];clearAnim(next);clearAnim(old);paintLayer(next,i);next.classList.add('active','auto-enter');old.classList.remove('active');activeLayer=1-activeLayer;setMeta(i);blackout.style.transitionDuration=reduce?'.01ms':'3000ms';requestAnimationFrame(()=>blackout.classList.remove('on'));if(!(await wait(reduce?20:3000,id)))return;clearAnim(next);if(!(await wait(6000,id)))return;if(i===5){auto=false;ui();return}if(!(await toBlack(id,1200)))return}}
-function next(){manualTransition(current+1,1)}function prev(){manualTransition(current-1,-1)}
+for(let i=3;i<6;i++){const next=layers[1-activeLayer],old=layers[activeLayer];clearAnim(next);clearAnim(old);paintLayer(next,i);next.classList.add('active','auto-enter');old.classList.remove('active');activeLayer=1-activeLayer;setMeta(i);blackout.style.transitionDuration=reduce?'.01ms':'3000ms';requestAnimationFrame(()=>blackout.classList.remove('on'));if(!(await wait(reduce?20:3000,id)))return;clearAnim(next);if(!(await wait(6000,id)))return;if(i===5){auto=false;showFinalCue(next);return}if(!(await toBlack(id,1200)))return}}
+function next(){if(current===5){showFinalCue();return}manualTransition(current+1,1)}function prev(){manualTransition(current-1,-1)}
 frames.forEach((f,i)=>{const b=document.createElement('button');b.className='card';b.type='button';const t=document.createElement('div');t.className='thumb';t.style.backgroundImage='url("'+f.src+'")';const s=document.createElement('span');s.textContent=f.type+' '+String((i%3)+1).padStart(2,'0');b.append(t,s);b.onclick=()=>{gallery.close();manualTransition(i,i>current?1:-1)};grid.appendChild(b)});
 $('#restart').onclick=play;$('#home').onclick=e=>{e.preventDefault();play()};$('#prev').onclick=prev;$('#next').onclick=next;$('#framesBtn').onclick=()=>gallery.showModal();$('#close').onclick=()=>gallery.close();gallery.onclick=e=>{if(e.target===gallery)gallery.close()};
 $('#full').onclick=async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen?.();app.classList.add('immersive')}else{await document.exitFullscreen?.();app.classList.remove('immersive')}}catch{app.classList.toggle('immersive')}ui()};
@@ -186,6 +188,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.5.0 -->
+<!-- Visual Stories v1.6.0 -->
 </body>
 </html>
