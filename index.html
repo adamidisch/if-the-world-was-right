@@ -47,7 +47,6 @@ button{font:inherit}
 .quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 22% 30%,rgba(76,137,157,.23),transparent 34%),radial-gradient(circle at 79% 68%,rgba(192,111,67,.18),transparent 32%),radial-gradient(circle at 56% 50%,rgba(115,113,158,.13),transparent 42%),#07090d;opacity:0;visibility:hidden;transition:opacity .9s var(--ease),visibility .9s}
 .quote.show{opacity:1;visibility:visible}
 .quote-inner{width:min(780px,calc(100% - 48px));text-align:center}
-.quote-kicker{font-size:10px;font-weight:650;letter-spacing:.2em;color:rgba(255,255,255,.38);margin-bottom:22px}
 .quote h1{margin:0;font-family:"Avenir Next","Segoe UI Variable Display","Segoe UI",Arial,sans-serif;font-size:clamp(30px,3.8vw,46px);line-height:1.12;letter-spacing:.035em;word-spacing:.09em;font-weight:620;text-wrap:balance;color:#edf1ee;background-image:linear-gradient(108deg,#f3eee3 8%,#aac7d0 92%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:.2px rgba(238,235,220,.2);filter:drop-shadow(0 8px 22px rgba(0,0,0,.34))}
 .quote-lead{max-width:620px;margin:20px auto 0;font-size:16px;line-height:1.5;letter-spacing:-.006em;color:rgba(255,255,255,.72);text-wrap:balance}
 .quote-rule{width:42px;height:1px;background:rgba(255,255,255,.22);margin:26px auto 18px}
@@ -61,16 +60,17 @@ button{font:inherit}
 .stage:hover .arrow,.stage.ui .arrow{opacity:1}
 .stage.end .arrow.next{opacity:0;pointer-events:none}
 .stage.end .meta,.stage.end .swipe-hint{opacity:0}
-.end-card{position:absolute;z-index:14;left:50%;bottom:24px;transform:translate(-50%,12px);width:min(260px,calc(100% - 48px));display:grid;justify-items:center;gap:10px;opacity:0;visibility:hidden;transition:opacity .65s ease,transform .65s var(--ease),visibility .65s;pointer-events:none}
+.end-card{position:absolute;z-index:14;left:50%;bottom:20px;transform:translate(-50%,10px);width:min(180px,calc(100% - 48px));display:grid;justify-items:center;gap:7px;opacity:0;visibility:hidden;transition:opacity .65s ease,transform .65s var(--ease),visibility .65s;pointer-events:none}
 .stage.end .end-card{opacity:1;visibility:visible;transform:translate(-50%,0);pointer-events:auto}
-.end-label{font-size:9px;font-weight:650;letter-spacing:.18em;color:rgba(255,255,255,.74);text-shadow:0 1px 8px #000}
+.end-label{font-size:8px;font-weight:650;letter-spacing:.16em;color:rgba(255,255,255,.68);text-shadow:0 1px 8px #000}
 .end-line{width:100%;height:1px;overflow:hidden;background:rgba(255,255,255,.13)}
 .end-line:after{content:"";display:block;width:100%;height:100%;background:linear-gradient(90deg,rgba(243,238,227,.86),rgba(170,199,208,.86));transform:scaleX(0);transform-origin:left;transition:transform 1.6s var(--ease) .18s}
 .stage.end .end-line:after{transform:scaleX(1)}
-.replay{min-height:38px;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:0 15px;background:rgba(7,8,9,.48);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:rgba(255,255,255,.88);display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:630;letter-spacing:.11em;cursor:pointer;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.replay{position:relative;height:30px;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:0 11px;background:rgba(7,8,9,.44);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:rgba(255,255,255,.84);display:inline-flex;align-items:center;gap:6px;font-size:8px;font-weight:650;letter-spacing:.1em;cursor:pointer;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.replay:before{content:"";position:absolute;inset:-7px}
 .replay:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.24)}
 .replay:active{transform:scale(.98)}
-.replay svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.replay svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .arrow.prev{left:16px}.arrow.next{right:16px}.arrow svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
 .preloader{position:fixed;inset:0;z-index:1000;background:#050506;display:grid;place-items:center;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
 .preloader.done{opacity:0;visibility:hidden;pointer-events:none}
@@ -106,8 +106,8 @@ button{font:inherit}
  .meta{left:14px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));padding:6px 8px;border-radius:999px;background:rgba(8,8,9,.34);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:8px}
  .swipe-hint{left:auto;right:14px;bottom:max(18px,calc(env(safe-area-inset-bottom) + 14px));transform:none;display:block;opacity:.5;font-size:8px}
  .footer{display:none}
- .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(26px,7.7vw,36px);line-height:1.14;letter-spacing:.03em}.quote-lead{font-size:15px;line-height:1.5;margin-top:18px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
- .end-card{bottom:max(20px,calc(env(safe-area-inset-bottom) + 14px));width:min(230px,calc(100% - 56px));gap:9px}.replay{min-height:44px;padding:0 17px}
+ .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote h1{font-size:clamp(26px,7.7vw,36px);line-height:1.14;letter-spacing:.03em}.quote-lead{font-size:15px;line-height:1.5;margin-top:18px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
+ .end-card{bottom:max(17px,calc(env(safe-area-inset-bottom) + 11px));width:min(170px,calc(100% - 64px));gap:7px}.replay{height:30px;padding:0 11px}
  .grid{grid-template-columns:1fr 1fr}
 }
 @media(orientation:landscape) and (max-height:600px){
@@ -138,7 +138,6 @@ button{font:inherit}
 <div class="chrome-gradient"></div>
 <div class="blackout" id="blackout"></div>
 <div class="quote" id="quote" aria-hidden="true"><div class="quote-inner">
-<div class="quote-kicker">VISUAL STORIES · 01</div>
 <h1>ΑΝ Ο ΚΟΣΜΟΣ ΗΤΑΝ ΣΩΣΤΟΣ&nbsp;...</h1>
 <p class="quote-lead">Ο ίδιος τόπος. Χωρίς ρύπανση. Χωρίς θόρυβο.</p>
 <div class="quote-rule"></div>
@@ -200,6 +199,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.7.0 -->
+<!-- Visual Stories v1.7.1 -->
 </body>
 </html>
