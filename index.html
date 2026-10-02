@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
 <meta name="theme-color" content="#050506">
 <link rel="preload" href="assets/before-01.webp" as="image" type="image/webp" fetchpriority="high">
-<meta name="description" content="Η ίδια πολυκατοικία, οι ίδιες επιφάνειες, ο ίδιος δρόμος — αλλά μια τελείως διαφορετική εικόνα.">
+<meta name="description" content="Ο ίδιος τόπος χωρίς ρύπανση και θόρυβο.">
 <meta property="og:title" content="If the World Was Right — Visual Stories">
 <meta property="og:description" content="From visual noise to visual care.">
 <meta property="og:image" content="assets/after-01.webp">
@@ -44,13 +44,13 @@ button{font:inherit}
 @keyframes swipeOutRight{0%{opacity:1;transform:translate3d(0,0,0)}100%{opacity:0;transform:translate3d(3.5%,0,0)}}
 .blackout{position:absolute;inset:0;z-index:8;background:#000;opacity:0;pointer-events:none;transition:opacity 1s var(--ease)}
 .blackout.on{opacity:1}
-.quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 50% 38%,#24202d 0,#111015 43%,#050506 78%);opacity:0;visibility:hidden;transition:opacity .9s var(--ease),visibility .9s}
+.quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 22% 30%,rgba(76,137,157,.23),transparent 34%),radial-gradient(circle at 79% 68%,rgba(192,111,67,.18),transparent 32%),radial-gradient(circle at 56% 50%,rgba(115,113,158,.13),transparent 42%),#07090d;opacity:0;visibility:hidden;transition:opacity .9s var(--ease),visibility .9s}
 .quote.show{opacity:1;visibility:visible}
 .quote-inner{width:min(780px,calc(100% - 48px));text-align:center}
 .quote-kicker{font-size:10px;font-weight:650;letter-spacing:.2em;color:rgba(255,255,255,.38);margin-bottom:22px}
-.quote h1{margin:0;font-size:clamp(38px,5.4vw,72px);line-height:.97;letter-spacing:-.05em;font-weight:520;text-wrap:balance}
-.quote-lead{max-width:660px;margin:24px auto 0;font-size:17px;line-height:1.48;letter-spacing:-.015em;color:rgba(255,255,255,.78);text-wrap:balance}
-.quote-sub{max-width:610px;margin:12px auto 0;font-size:13px;line-height:1.58;color:rgba(255,255,255,.46);text-wrap:balance}
+.quote h1{margin:0;font-size:clamp(36px,5vw,64px);line-height:.96;letter-spacing:-.055em;font-weight:800;text-wrap:balance;color:#dce8ec;background-image:url('assets/after-02.webp');background-size:138% auto;background-position:50% 42%;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:.35px rgba(238,235,220,.28);filter:drop-shadow(0 10px 26px rgba(0,0,0,.42));animation:titleArtwork 10s ease-in-out infinite alternate}
+@keyframes titleArtwork{from{background-position:44% 38%}to{background-position:58% 60%}}
+.quote-lead{max-width:560px;margin:22px auto 0;font-size:16px;line-height:1.45;letter-spacing:-.012em;color:rgba(255,255,255,.72);text-wrap:balance}
 .quote-rule{width:42px;height:1px;background:rgba(255,255,255,.22);margin:26px auto 18px}
 .quote-signoff{font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.3)}
 .chrome-gradient{position:absolute;inset:auto 0 0;height:34%;z-index:6;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none}
@@ -95,7 +95,7 @@ button{font:inherit}
  .meta{left:14px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));padding:6px 8px;border-radius:999px;background:rgba(8,8,9,.34);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:8px}
  .swipe-hint{left:auto;right:14px;bottom:max(18px,calc(env(safe-area-inset-bottom) + 14px));transform:none;display:block;opacity:.5;font-size:8px}
  .footer{display:none}
- .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(32px,9.6vw,46px);line-height:1}.quote-lead{font-size:15px;line-height:1.46;margin-top:20px}.quote-sub{font-size:12.5px;line-height:1.52;margin-top:10px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
+ .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(32px,9.6vw,46px);line-height:1}.quote-lead{font-size:15px;line-height:1.46;margin-top:20px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
  .grid{grid-template-columns:1fr 1fr}
 }
 @media(orientation:landscape) and (max-height:600px){
@@ -103,11 +103,11 @@ button{font:inherit}
  .stage-wrap,.stage{height:100dvh}
  .meta,.swipe-hint{bottom:max(10px,env(safe-area-inset-bottom))}
 }
-@media(prefers-reduced-motion:reduce){.photo-layer,.blackout,.quote{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:reduce){.photo-layer,.blackout,.quote,.quote h1{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-<div class="preloader" id="preloader" aria-live="polite"><div class="preload-box"><div class="preload-brand">VISUAL STORIES</div><div class="preload-sub">Προετοιμάζουμε την οπτική ιστορία</div><div class="preload-track"><div class="preload-fill" id="preloadFill"></div></div><div class="preload-count" id="preloadCount">0%</div></div></div>
+<div class="preloader" id="preloader" aria-live="polite"><div class="preload-box"><div class="preload-brand">VISUAL STORIES</div><div class="preload-sub">Loading ...</div><div class="preload-track"><div class="preload-fill" id="preloadFill"></div></div><div class="preload-count" id="preloadCount">0%</div></div></div>
 <div class="app" id="app">
 <header class="topbar">
 <a class="brand" id="home" href="#">VISUAL STORIES</a>
@@ -128,8 +128,7 @@ button{font:inherit}
 <div class="quote" id="quote" aria-hidden="true"><div class="quote-inner">
 <div class="quote-kicker">VISUAL STORIES · 01</div>
 <h1>ΑΝ Ο ΚΟΣΜΟΣ ΗΤΑΝ ΣΩΣΤΟΣ...</h1>
-<p class="quote-lead">Ο ίδιος τόπος. Μια διαφορετική στάση απέναντι στον χώρο.</p>
-<p class="quote-sub">Η εικόνα δεν χρειάζεται να αλλάξει τον τόπο. Αρκεί να αφαιρέσει τον θόρυβο, να αποκαταστήσει την καθαρότητα και να αφήσει την αρχιτεκτονική να φανεί.</p>
+<p class="quote-lead">Ο ίδιος τόπος χωρίς ρύπανση και θόρυβο.</p>
 <div class="quote-rule"></div>
 <div class="quote-signoff">FROM VISUAL NOISE TO VISUAL CARE</div>
 </div></div>
@@ -139,7 +138,7 @@ button{font:inherit}
 <div class="swipe-hint">SWIPE</div>
 </section>
 </main>
-<footer class="footer"><div class="footer-brand">VISUAL STORIES</div><p>Μια οπτική μελέτη για το πώς η φροντίδα αλλάζει την καθημερινή εικόνα ενός κοινού χώρου.</p><div class="footer-note">From visual noise to visual care.</div></footer>
+<footer class="footer"><div class="footer-brand">VISUAL STORIES</div><p>Ο ίδιος τόπος χωρίς ρύπανση και θόρυβο.</p><div class="footer-note">From visual noise to visual care.</div></footer>
 </div>
 <dialog class="gallery" id="gallery"><div class="gallery-head"><div><small>VISUAL STORIES</small><h2>All Frames</h2></div><button class="close" id="close" type="button" aria-label="Close">×</button></div><div class="grid" id="grid"></div></dialog>
 <script>
@@ -187,6 +186,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.4.1 -->
+<!-- Visual Stories v1.5.0 -->
 </body>
 </html>
