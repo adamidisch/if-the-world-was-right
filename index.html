@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
 <meta name="theme-color" content="#050506">
+<link rel="preload" href="assets/before-01.webp" as="image" type="image/webp" fetchpriority="high">
 <meta name="description" content="Η ίδια πολυκατοικία, οι ίδιες επιφάνειες, ο ίδιος δρόμος — αλλά μια τελείως διαφορετική εικόνα.">
 <meta property="og:title" content="If the World Was Right — Visual Stories">
 <meta property="og:description" content="From visual noise to visual care.">
@@ -24,7 +25,7 @@ button{font:inherit}
 .tool:hover{background:rgba(255,255,255,.07);color:#fff}
 .tool svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tool.primary{background:rgba(255,255,255,.94);color:#0b0b0c}
-.tool.mobile-only{display:none}
+
 .stage-wrap{height:calc(100dvh - 54px);min-height:520px;padding:12px 18px 18px}
 .stage{height:100%;position:relative;overflow:hidden;background:#030304;border-radius:18px;isolation:isolate;box-shadow:0 18px 70px rgba(0,0,0,.38);touch-action:pan-y}
 .ambient{position:absolute;inset:-46px;background:center/cover no-repeat;filter:blur(38px) brightness(.17) saturate(.8);transform:scale(1.12);opacity:.58;transition:background-image .45s ease,opacity .5s ease}
@@ -33,10 +34,10 @@ button{font:inherit}
 .photo-layer.active{opacity:1}
 .photo-layer.auto-enter{animation:autoReveal 3s var(--ease) both}
 @keyframes autoReveal{0%{opacity:0;transform:scale(.997)}100%{opacity:1;transform:scale(1)}}
-.photo-layer.swipe-in-right{animation:swipeInRight .46s var(--ease) both}
-.photo-layer.swipe-in-left{animation:swipeInLeft .46s var(--ease) both}
-.photo-layer.swipe-out-left{animation:swipeOutLeft .46s var(--ease) both}
-.photo-layer.swipe-out-right{animation:swipeOutRight .46s var(--ease) both}
+.photo-layer.swipe-in-right{animation:swipeInRight .52s var(--ease) both}
+.photo-layer.swipe-in-left{animation:swipeInLeft .52s var(--ease) both}
+.photo-layer.swipe-out-left{animation:swipeOutLeft .52s var(--ease) both}
+.photo-layer.swipe-out-right{animation:swipeOutRight .52s var(--ease) both}
 @keyframes swipeInRight{0%{opacity:0;transform:translate3d(7%,0,0) scale(.992)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @keyframes swipeInLeft{0%{opacity:0;transform:translate3d(-7%,0,0) scale(.992)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @keyframes swipeOutLeft{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}100%{opacity:0;transform:translate3d(-5%,0,0) scale(.995)}}
@@ -48,7 +49,7 @@ button{font:inherit}
 .quote-inner{width:min(760px,calc(100% - 48px));text-align:center}
 .quote-kicker{font-size:10px;letter-spacing:.19em;color:rgba(255,255,255,.38);margin-bottom:22px}
 .quote h1{margin:0;font-size:clamp(34px,5.2vw,70px);line-height:.98;letter-spacing:-.045em;font-weight:520}
-.quote p{max-width:600px;margin:20px auto 0;font-size:14px;line-height:1.58;color:rgba(255,255,255,.56)}
+.quote-lead{max-width:640px;margin:20px auto 0;font-size:15px;line-height:1.55;color:rgba(255,255,255,.68)}.quote-sub{max-width:620px;margin:10px auto 0;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.4)}
 .chrome-gradient{position:absolute;inset:auto 0 0;height:34%;z-index:6;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none}
 .meta{position:absolute;z-index:12;left:18px;bottom:17px;display:flex;gap:9px;align-items:center;font-size:9px;letter-spacing:.135em;color:rgba(255,255,255,.55);text-shadow:0 1px 8px #000;opacity:.86;transition:opacity .2s}
 .meta strong{font-weight:720;color:rgba(255,255,255,.88)}
@@ -82,13 +83,23 @@ button{font:inherit}
 .footer-note{font-size:11px;color:rgba(255,255,255,.34);white-space:nowrap}
 .immersive .topbar,.immersive .footer{display:none}.immersive .stage-wrap{height:100dvh;padding:0}.immersive .stage{height:100dvh;border-radius:0}
 @media(max-width:760px){
- .topbar{height:50px;grid-template-columns:1fr auto}.story-name{display:none}.tool{width:32px;padding:0}.tool span{display:none}.tool.mobile-only{display:inline-flex}.tool.primary{background:transparent;color:rgba(255,255,255,.72);border-color:transparent}
- .stage-wrap{height:calc(100dvh - 50px);min-height:0;padding:0}.stage{border-radius:0;box-shadow:none}
- .ambient{opacity:.44}.arrow{display:none}.meta{left:14px;bottom:max(15px,env(safe-area-inset-bottom));font-size:8px}.swipe-hint{display:block;bottom:max(15px,env(safe-area-inset-bottom));opacity:.55}.footer{display:none}
- .quote-inner{width:min(520px,calc(100% - 38px))}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(34px,10vw,50px)}.quote p{font-size:13px;line-height:1.55;margin-top:17px}
+ .topbar{position:fixed;top:0;left:0;right:0;height:auto;min-height:54px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;grid-template-columns:1fr auto;background:linear-gradient(180deg,rgba(4,4,5,.88) 0,rgba(4,4,5,.44) 56%,transparent 100%);border-bottom:0;z-index:40}
+ .story-name{display:none}.brand{font-size:10px;letter-spacing:.14em}.actions{gap:3px}
+ .tool{width:34px;height:34px;padding:0;border-radius:50%;background:rgba(10,10,11,.32);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.tool span{display:none}.tool.primary{background:rgba(10,10,11,.32);color:rgba(255,255,255,.76);border-color:transparent}
+ .stage-wrap{height:100dvh;min-height:0;padding:0}.stage{height:100dvh;border-radius:0;box-shadow:none}
+ .ambient{opacity:.52;filter:blur(34px) brightness(.19) saturate(.78);inset:-52px}
+ .arrow{display:none}
+ .meta{left:14px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));padding:6px 8px;border-radius:999px;background:rgba(8,8,9,.34);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:8px}
+ .swipe-hint{left:auto;right:14px;bottom:max(18px,calc(env(safe-area-inset-bottom) + 14px));transform:none;display:block;opacity:.5;font-size:8px}
+ .footer{display:none}
+ .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:17px}.quote h1{font-size:clamp(30px,9vw,44px);line-height:1.02}.quote-lead{font-size:14px;line-height:1.52;margin-top:18px}.quote-sub{font-size:12px;line-height:1.5;margin-top:9px}
  .grid{grid-template-columns:1fr 1fr}
 }
-@media(orientation:landscape) and (max-height:600px){.topbar{height:46px}.stage-wrap{height:calc(100dvh - 46px)}.tool.mobile-only{display:none}.meta,.swipe-hint{bottom:max(10px,env(safe-area-inset-bottom))}}
+@media(orientation:landscape) and (max-height:600px){
+ .topbar{min-height:44px;padding:max(6px,env(safe-area-inset-top)) 12px 6px}
+ .stage-wrap,.stage{height:100dvh}
+ .meta,.swipe-hint{bottom:max(10px,env(safe-area-inset-bottom))}
+}
 @media(prefers-reduced-motion:reduce){.photo-layer,.blackout,.quote{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -101,7 +112,6 @@ button{font:inherit}
 <nav class="actions" aria-label="Story controls">
 <button class="tool" id="restart" type="button" aria-label="Restart" title="Restart"><svg viewBox="0 0 24 24"><path d="M4.7 8.3A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg><span>Restart</span></button>
 <button class="tool" id="framesBtn" type="button" aria-label="All Frames"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg><span>Frames</span></button>
-<button class="tool mobile-only" id="landscape" type="button" aria-label="Landscape" title="Landscape"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 10l-2 2 2 2M16 10l2 2-2 2"/></svg><span>Landscape</span></button>
 <button class="tool primary" id="full" type="button" aria-label="Full View"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M4 15v5h5M20 15v5h-5"/></svg><span>Full View</span></button>
 </nav>
 </header>
@@ -112,7 +122,7 @@ button{font:inherit}
 <div class="photo-layer" id="layerB"></div>
 <div class="chrome-gradient"></div>
 <div class="blackout" id="blackout"></div>
-<div class="quote" id="quote" aria-hidden="true"><div class="quote-inner"><div class="quote-kicker">IF THE WORLD WAS RIGHT</div><h1>ΑΝ Ο ΚΟΣΜΟΣ ΗΤΑΝ ΣΩΣΤΟΣ...</h1><p>Η ίδια πολυκατοικία, οι ίδιες επιφάνειες, ο ίδιος δρόμος — αλλά μια τελείως διαφορετική εικόνα. Αυτό το story δείχνει πώς ο οπτικός βανδαλισμός θα μπορούσε να μετατραπεί σε κάτι ήρεμο, ενιαίο και όμορφο.</p></div></div>
+<div class="quote" id="quote" aria-hidden="true"><div class="quote-inner"><div class="quote-kicker">VISUAL STORY · BEFORE / AFTER</div><h1>ΑΝ Ο ΚΟΣΜΟΣ ΗΤΑΝ ΣΩΣΤΟΣ...</h1><p class="quote-lead">Η ίδια πολυκατοικία, οι ίδιες επιφάνειες, ο ίδιος δρόμος — αλλά μια τελείως διαφορετική εικόνα.</p><p class="quote-sub">Αυτό το story δείχνει πώς ο οπτικός βανδαλισμός θα μπορούσε να μετατραπεί σε κάτι ήρεμο, ενιαίο και όμορφο.</p></div></div>
 <button class="arrow prev" id="prev" type="button" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
 <button class="arrow next" id="next" type="button" aria-label="Next"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
 <div class="meta"><strong id="kind">BEFORE</strong><span id="count">01 / 06</span></div>
@@ -132,16 +142,16 @@ const frames=[
 {src:'assets/after-03.webp',type:'AFTER',alt:'After — view 3'}];
 const $=s=>document.querySelector(s);
 const stage=$('#stage'),ambient=$('#ambient'),blackout=$('#blackout'),quote=$('#quote'),kind=$('#kind'),count=$('#count'),gallery=$('#gallery'),grid=$('#grid'),app=$('#app'),preloader=$('#preloader'),preloadFill=$('#preloadFill'),preloadCount=$('#preloadCount');
-let layers=[$('#layerA'),$('#layerB')],activeLayer=0,current=0,runId=0,auto=false,touchX=0,touchY=0,uiTimer,transitioning=false;
+let layers=[$('#layerA'),$('#layerB')],activeLayer=0,current=0,runId=0,auto=false,touchX=0,touchY=0,touchDx=0,touchDy=0,dragging=false,uiTimer,transitioning=false;const preloadRefs=[];
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const wait=(ms,id)=>new Promise(r=>setTimeout(()=>r(id===runId),ms));
 function setMeta(n){current=n;kind.textContent=frames[n].type;count.textContent=String(n+1).padStart(2,'0')+' / 06';ambient.style.backgroundImage='url("'+frames[n].src+'")'}
 function paintLayer(el,n){el.style.backgroundImage='url("'+frames[n].src+'")';el.setAttribute('role','img');el.setAttribute('aria-label',frames[n].alt)}
 function clearAnim(el){el.classList.remove('swipe-in-right','swipe-in-left','swipe-out-left','swipe-out-right','auto-enter')}
 function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.style.backgroundImage='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
-async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(false);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:470));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui()}
+async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui()}
 function ui(){stage.classList.add('ui');clearTimeout(uiTimer);uiTimer=setTimeout(()=>stage.classList.remove('ui'),1300)}
-function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay)blackout.classList.remove('on');quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
+function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function toBlack(id,ms=1000){blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';blackout.classList.add('on');return wait(reduce?20:ms,id)}
 async function fromBlack(n,id,ms=650){const next=layers[1-activeLayer],old=layers[activeLayer];clearAnim(next);clearAnim(old);paintLayer(next,n);next.classList.add('active');old.classList.remove('active');activeLayer=1-activeLayer;setMeta(n);blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';requestAnimationFrame(()=>blackout.classList.remove('on'));return wait(reduce?20:ms,id)}
 async function play(){stop();const id=runId;auto=true;showInstant(0);blackout.classList.remove('on');
@@ -154,15 +164,20 @@ frames.forEach((f,i)=>{const b=document.createElement('button');b.className='car
 $('#restart').onclick=play;$('#home').onclick=e=>{e.preventDefault();play()};$('#prev').onclick=prev;$('#next').onclick=next;$('#framesBtn').onclick=()=>gallery.showModal();$('#close').onclick=()=>gallery.close();gallery.onclick=e=>{if(e.target===gallery)gallery.close()};
 $('#full').onclick=async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen?.();app.classList.add('immersive')}else{await document.exitFullscreen?.();app.classList.remove('immersive')}}catch{app.classList.toggle('immersive')}ui()};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)app.classList.remove('immersive')});
-$('#landscape').onclick=async()=>{try{await document.documentElement.requestFullscreen?.();await screen.orientation?.lock?.('landscape');app.classList.add('immersive')}catch{ui()}};
+await screen.orientation?.lock?.('landscape');app.classList.add('immersive')}catch{ui()}};
 addEventListener('keydown',e=>{if(gallery.open)return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
 stage.addEventListener('pointermove',ui,{passive:true});
-stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY},{passive:true});
-stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)*1.15)(dx<0?next:prev)()},{passive:true});
+stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;dragging=false;ui()},{passive:true});
+stage.addEventListener('touchmove',e=>{if(transitioning)return;const t=e.changedTouches[0];touchDx=t.clientX-touchX;touchDy=t.clientY-touchY;if(Math.abs(touchDx)>10&&Math.abs(touchDx)>Math.abs(touchDy)*1.15){if(auto)stop(true);dragging=true;const a=layers[activeLayer],px=Math.max(-26,Math.min(26,touchDx*.09));a.style.transition='none';a.style.transform='translate3d('+px+'px,0,0) scale(.998)';a.style.opacity=String(Math.max(.84,1-Math.abs(touchDx)/900))}},{passive:true});
+stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY,a=layers[activeLayer];a.style.transition=reduce?'none':'transform .24s var(--ease),opacity .24s ease';a.style.transform='translate3d(0,0,0) scale(1)';a.style.opacity='1';setTimeout(()=>{a.style.transition=''},reduce?20:250);dragging=false;if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15)(dx<0?next:prev)()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&auto)stop()});
-async function preloadAssets(){let loaded=0,failed=0;const total=frames.length;const tick=ok=>{loaded++;if(!ok)failed++;const pct=Math.round((loaded/total)*100);preloadFill.style.width=pct+'%';preloadCount.textContent=pct+'%'};await Promise.all(frames.map(f=>new Promise(resolve=>{const im=new Image();im.onload=async()=>{try{if(im.decode)await im.decode()}catch{}tick(true);resolve()};im.onerror=()=>{tick(false);resolve()};im.src=f.src})));return failed===0}
-(async()=>{const ok=await preloadAssets();if(!ok){preloadCount.textContent='RETRY';preloadCount.style.color='rgba(255,255,255,.72)';preloader.onclick=()=>location.reload();return}showInstant(0);await new Promise(r=>setTimeout(r,160));preloader.classList.add('done');await new Promise(r=>setTimeout(r,560));play()})();
+function loadAsset(f,index,attempt=0){return new Promise(resolve=>{const im=new Image();im.decoding='async';let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);if(ok){preloadRefs[index]=im;resolve(true)}else if(attempt<1){loadAsset(f,index,attempt+1).then(resolve)}else resolve(false)};const timer=setTimeout(()=>finish(false),12000);im.onload=async()=>{try{if(im.decode)await im.decode()}catch{}finish(true)};im.onerror=()=>finish(false);im.src=f.src+(attempt?'?retry=1':'')})}
+async function preloadAssets(){preloader.classList.remove('done');preloadFill.style.width='0%';preloadCount.style.color='';preloadCount.textContent='0%';let settled=0;const results=await Promise.all(frames.map((f,i)=>loadAsset(f,i).then(ok=>{settled++;const pct=Math.round((settled/frames.length)*100);preloadFill.style.width=pct+'%';preloadCount.textContent=pct+'%';return ok})));return results.every(Boolean)}
+let booting=false;
+async function boot(){if(booting)return;booting=true;const ok=await preloadAssets();if(!ok){preloadCount.textContent='TAP TO RETRY';preloadCount.style.color='rgba(255,255,255,.72)';preloader.style.cursor='pointer';booting=false;return}preloader.style.cursor='default';showInstant(0);await new Promise(r=>setTimeout(r,160));preloader.classList.add('done');await new Promise(r=>setTimeout(r,560));booting=false;play()}
+preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
+boot();
 </script>
-<!-- Visual Stories v1.2.0 -->
+<!-- Visual Stories v1.3.0 -->
 </body>
 </html>
