@@ -30,26 +30,29 @@ button{font:inherit}
 .stage{height:100%;position:relative;overflow:hidden;background:#030304;border-radius:18px;isolation:isolate;box-shadow:0 18px 70px rgba(0,0,0,.38);touch-action:pan-y}
 .ambient{position:absolute;inset:-46px;background:center/cover no-repeat;filter:blur(38px) brightness(.17) saturate(.8);transform:scale(1.12);opacity:.58;transition:background-image .45s ease,opacity .5s ease}
 .ambient:after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.38)}
-.photo-layer{position:absolute;inset:0;z-index:2;background-position:center;background-repeat:no-repeat;background-size:contain;opacity:0;transform:translate3d(0,0,0) scale(1);will-change:opacity,transform;pointer-events:none}
+.photo-layer{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:contain;object-position:center;display:block;opacity:0;transform:translate3d(0,0,0);pointer-events:none;filter:none;image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .photo-layer.active{opacity:1}
 .photo-layer.auto-enter{animation:autoReveal 3s var(--ease) both}
-@keyframes autoReveal{0%{opacity:0;transform:scale(.997)}100%{opacity:1;transform:scale(1)}}
+@keyframes autoReveal{0%{opacity:0}100%{opacity:1}}
 .photo-layer.swipe-in-right{animation:swipeInRight .52s var(--ease) both}
 .photo-layer.swipe-in-left{animation:swipeInLeft .52s var(--ease) both}
 .photo-layer.swipe-out-left{animation:swipeOutLeft .52s var(--ease) both}
 .photo-layer.swipe-out-right{animation:swipeOutRight .52s var(--ease) both}
-@keyframes swipeInRight{0%{opacity:0;transform:translate3d(7%,0,0) scale(.992)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
-@keyframes swipeInLeft{0%{opacity:0;transform:translate3d(-7%,0,0) scale(.992)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
-@keyframes swipeOutLeft{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}100%{opacity:0;transform:translate3d(-5%,0,0) scale(.995)}}
-@keyframes swipeOutRight{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}100%{opacity:0;transform:translate3d(5%,0,0) scale(.995)}}
+@keyframes swipeInRight{0%{opacity:0;transform:translate3d(5%,0,0)}100%{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes swipeInLeft{0%{opacity:0;transform:translate3d(-5%,0,0)}100%{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes swipeOutLeft{0%{opacity:1;transform:translate3d(0,0,0)}100%{opacity:0;transform:translate3d(-3.5%,0,0)}}
+@keyframes swipeOutRight{0%{opacity:1;transform:translate3d(0,0,0)}100%{opacity:0;transform:translate3d(3.5%,0,0)}}
 .blackout{position:absolute;inset:0;z-index:8;background:#000;opacity:0;pointer-events:none;transition:opacity 1s var(--ease)}
 .blackout.on{opacity:1}
-.quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#1f1c27 0,#0f0e12 42%,#050506 78%);opacity:0;visibility:hidden;transition:opacity .85s var(--ease),visibility .85s}
+.quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 50% 38%,#24202d 0,#111015 43%,#050506 78%);opacity:0;visibility:hidden;transition:opacity .9s var(--ease),visibility .9s}
 .quote.show{opacity:1;visibility:visible}
-.quote-inner{width:min(760px,calc(100% - 48px));text-align:center}
-.quote-kicker{font-size:10px;letter-spacing:.19em;color:rgba(255,255,255,.38);margin-bottom:22px}
-.quote h1{margin:0;font-size:clamp(34px,5.2vw,70px);line-height:.98;letter-spacing:-.045em;font-weight:520}
-.quote-lead{max-width:640px;margin:20px auto 0;font-size:15px;line-height:1.55;color:rgba(255,255,255,.68)}.quote-sub{max-width:620px;margin:10px auto 0;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.4)}
+.quote-inner{width:min(780px,calc(100% - 48px));text-align:center}
+.quote-kicker{font-size:10px;font-weight:650;letter-spacing:.2em;color:rgba(255,255,255,.38);margin-bottom:22px}
+.quote h1{margin:0;font-size:clamp(38px,5.4vw,72px);line-height:.97;letter-spacing:-.05em;font-weight:520;text-wrap:balance}
+.quote-lead{max-width:660px;margin:24px auto 0;font-size:17px;line-height:1.48;letter-spacing:-.015em;color:rgba(255,255,255,.78);text-wrap:balance}
+.quote-sub{max-width:610px;margin:12px auto 0;font-size:13px;line-height:1.58;color:rgba(255,255,255,.46);text-wrap:balance}
+.quote-rule{width:42px;height:1px;background:rgba(255,255,255,.22);margin:26px auto 18px}
+.quote-signoff{font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.3)}
 .chrome-gradient{position:absolute;inset:auto 0 0;height:34%;z-index:6;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none}
 .meta{position:absolute;z-index:12;left:18px;bottom:17px;display:flex;gap:9px;align-items:center;font-size:9px;letter-spacing:.135em;color:rgba(255,255,255,.55);text-shadow:0 1px 8px #000;opacity:.86;transition:opacity .2s}
 .meta strong{font-weight:720;color:rgba(255,255,255,.88)}
@@ -92,7 +95,7 @@ button{font:inherit}
  .meta{left:14px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));padding:6px 8px;border-radius:999px;background:rgba(8,8,9,.34);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:8px}
  .swipe-hint{left:auto;right:14px;bottom:max(18px,calc(env(safe-area-inset-bottom) + 14px));transform:none;display:block;opacity:.5;font-size:8px}
  .footer{display:none}
- .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:17px}.quote h1{font-size:clamp(30px,9vw,44px);line-height:1.02}.quote-lead{font-size:14px;line-height:1.52;margin-top:18px}.quote-sub{font-size:12px;line-height:1.5;margin-top:9px}
+ .quote-inner{width:min(540px,calc(100% - 42px));padding:0 4px}.quote-kicker{font-size:9px;margin-bottom:18px}.quote h1{font-size:clamp(32px,9.6vw,46px);line-height:1}.quote-lead{font-size:15px;line-height:1.46;margin-top:20px}.quote-sub{font-size:12.5px;line-height:1.52;margin-top:10px}.quote-rule{margin:22px auto 15px}.quote-signoff{font-size:8px}
  .grid{grid-template-columns:1fr 1fr}
 }
 @media(orientation:landscape) and (max-height:600px){
@@ -104,7 +107,7 @@ button{font:inherit}
 </style>
 </head>
 <body>
-<div class="preloader" id="preloader" aria-live="polite"><div class="preload-box"><div class="preload-brand">VISUAL STORIES</div><div class="preload-sub">Preparing the story</div><div class="preload-track"><div class="preload-fill" id="preloadFill"></div></div><div class="preload-count" id="preloadCount">0%</div></div></div>
+<div class="preloader" id="preloader" aria-live="polite"><div class="preload-box"><div class="preload-brand">VISUAL STORIES</div><div class="preload-sub">Loading 6 high-quality frames</div><div class="preload-track"><div class="preload-fill" id="preloadFill"></div></div><div class="preload-count" id="preloadCount">0%</div></div></div>
 <div class="app" id="app">
 <header class="topbar">
 <a class="brand" id="home" href="#">VISUAL STORIES</a>
@@ -118,11 +121,18 @@ button{font:inherit}
 <main class="stage-wrap">
 <section class="stage" id="stage" aria-live="polite">
 <div class="ambient" id="ambient"></div>
-<div class="photo-layer active" id="layerA"></div>
-<div class="photo-layer" id="layerB"></div>
+<img class="photo-layer active" id="layerA" alt="" draggable="false" decoding="async" fetchpriority="high">
+<img class="photo-layer" id="layerB" alt="" draggable="false" decoding="async">
 <div class="chrome-gradient"></div>
 <div class="blackout" id="blackout"></div>
-<div class="quote" id="quote" aria-hidden="true"><div class="quote-inner"><div class="quote-kicker">VISUAL STORY · BEFORE / AFTER</div><h1>ΑΝ Ο ΚΟΣΜΟΣ ΗΤΑΝ ΣΩΣΤΟΣ...</h1><p class="quote-lead">Η ίδια πολυκατοικία, οι ίδιες επιφάνειες, ο ίδιος δρόμος — αλλά μια τελείως διαφορετική εικόνα.</p><p class="quote-sub">Αυτό το story δείχνει πώς ο οπτικός βανδαλισμός θα μπορούσε να μετατραπεί σε κάτι ήρεμο, ενιαίο και όμορφο.</p></div></div>
+<div class="quote" id="quote" aria-hidden="true"><div class="quote-inner">
+<div class="quote-kicker">VISUAL STORIES · 01</div>
+<h1>ΑΝ Ο ΚΟΣΜΟΣ ΗΤΑΝ ΣΩΣΤΟΣ...</h1>
+<p class="quote-lead">Η ίδια πολυκατοικία. Ο ίδιος δρόμος. Μια εικόνα χωρίς τον θόρυβο.</p>
+<p class="quote-sub">Δεν αλλάξαμε το κτίριο. Αφαιρέσαμε μόνο τον οπτικό βανδαλισμό και αφήσαμε τον χώρο να αναπνεύσει.</p>
+<div class="quote-rule"></div>
+<div class="quote-signoff">FROM VISUAL NOISE TO VISUAL CARE</div>
+</div></div>
 <button class="arrow prev" id="prev" type="button" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
 <button class="arrow next" id="next" type="button" aria-label="Next"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
 <div class="meta"><strong id="kind">BEFORE</strong><span id="count">01 / 06</span></div>
@@ -146,9 +156,9 @@ let layers=[$('#layerA'),$('#layerB')],activeLayer=0,current=0,runId=0,auto=fals
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const wait=(ms,id)=>new Promise(r=>setTimeout(()=>r(id===runId),ms));
 function setMeta(n){current=n;kind.textContent=frames[n].type;count.textContent=String(n+1).padStart(2,'0')+' / 06';ambient.style.backgroundImage='url("'+frames[n].src+'")'}
-function paintLayer(el,n){el.style.backgroundImage='url("'+frames[n].src+'")';el.setAttribute('role','img');el.setAttribute('aria-label',frames[n].alt)}
+function paintLayer(el,n){el.src=frames[n].src;el.alt=frames[n].alt}
 function clearAnim(el){el.classList.remove('swipe-in-right','swipe-in-left','swipe-out-left','swipe-out-right','auto-enter')}
-function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.style.backgroundImage='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
+function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.removeAttribute('src');b.alt='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui()}
 function ui(){stage.classList.add('ui');clearTimeout(uiTimer);uiTimer=setTimeout(()=>stage.classList.remove('ui'),1300)}
 function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
@@ -167,8 +177,8 @@ document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement
 addEventListener('keydown',e=>{if(gallery.open)return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
 stage.addEventListener('pointermove',ui,{passive:true});
 stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;dragging=false;ui()},{passive:true});
-stage.addEventListener('touchmove',e=>{if(transitioning)return;const t=e.changedTouches[0];touchDx=t.clientX-touchX;touchDy=t.clientY-touchY;if(Math.abs(touchDx)>10&&Math.abs(touchDx)>Math.abs(touchDy)*1.15){if(auto)stop(true);dragging=true;const a=layers[activeLayer],px=Math.max(-26,Math.min(26,touchDx*.09));a.style.transition='none';a.style.transform='translate3d('+px+'px,0,0) scale(.998)';a.style.opacity=String(Math.max(.84,1-Math.abs(touchDx)/900))}},{passive:true});
-stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY,a=layers[activeLayer];a.style.transition=reduce?'none':'transform .24s var(--ease),opacity .24s ease';a.style.transform='translate3d(0,0,0) scale(1)';a.style.opacity='1';setTimeout(()=>{a.style.transition=''},reduce?20:250);dragging=false;if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15)(dx<0?next:prev)()},{passive:true});
+stage.addEventListener('touchmove',e=>{if(transitioning)return;const t=e.changedTouches[0];touchDx=t.clientX-touchX;touchDy=t.clientY-touchY;if(Math.abs(touchDx)>10&&Math.abs(touchDx)>Math.abs(touchDy)*1.15){if(auto)stop(true);dragging=true;const a=layers[activeLayer],px=Math.max(-26,Math.min(26,touchDx*.09));a.style.transition='none';a.style.transform='translate3d('+px+'px,0,0)';a.style.opacity=String(Math.max(.88,1-Math.abs(touchDx)/1000))}},{passive:true});
+stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY,a=layers[activeLayer];a.style.transition=reduce?'none':'transform .24s var(--ease),opacity .24s ease';a.style.transform='translate3d(0,0,0)';a.style.opacity='1';setTimeout(()=>{a.style.transition=''},reduce?20:250);dragging=false;if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15)(dx<0?next:prev)()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&auto)stop()});
 function loadAsset(f,index,attempt=0){return new Promise(resolve=>{const im=new Image();im.decoding='async';let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);if(ok){preloadRefs[index]=im;resolve(true)}else if(attempt<1){loadAsset(f,index,attempt+1).then(resolve)}else resolve(false)};const timer=setTimeout(()=>finish(false),12000);im.onload=async()=>{try{if(im.decode)await im.decode()}catch{}finish(true)};im.onerror=()=>finish(false);im.src=f.src+(attempt?'?retry=1':'')})}
 async function preloadAssets(){preloader.classList.remove('done');preloadFill.style.width='0%';preloadCount.style.color='';preloadCount.textContent='0%';let settled=0;const results=await Promise.all(frames.map((f,i)=>loadAsset(f,i).then(ok=>{settled++;const pct=Math.round((settled/frames.length)*100);preloadFill.style.width=pct+'%';preloadCount.textContent=pct+'%';return ok})));return results.every(Boolean)}
@@ -177,6 +187,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.3.0 -->
+<!-- Visual Stories v1.4.0 -->
 </body>
 </html>
