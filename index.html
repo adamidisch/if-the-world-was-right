@@ -164,7 +164,6 @@ frames.forEach((f,i)=>{const b=document.createElement('button');b.className='car
 $('#restart').onclick=play;$('#home').onclick=e=>{e.preventDefault();play()};$('#prev').onclick=prev;$('#next').onclick=next;$('#framesBtn').onclick=()=>gallery.showModal();$('#close').onclick=()=>gallery.close();gallery.onclick=e=>{if(e.target===gallery)gallery.close()};
 $('#full').onclick=async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen?.();app.classList.add('immersive')}else{await document.exitFullscreen?.();app.classList.remove('immersive')}}catch{app.classList.toggle('immersive')}ui()};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)app.classList.remove('immersive')});
-await screen.orientation?.lock?.('landscape');app.classList.add('immersive')}catch{ui()}};
 addEventListener('keydown',e=>{if(gallery.open)return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
 stage.addEventListener('pointermove',ui,{passive:true});
 stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;dragging=false;ui()},{passive:true});
