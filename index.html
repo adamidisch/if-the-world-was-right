@@ -28,12 +28,12 @@ button{font:inherit}
 .app{min-height:100dvh;background:#060607}
 .topbar{height:54px;padding:0 max(14px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;position:relative;z-index:40;background:rgba(7,7,8,.88);border-bottom:1px solid rgba(255,255,255,.07);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
 .brand{color:#fff;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.145em;white-space:nowrap}
-.story-name{text-align:center;font-size:10px;font-weight:520;letter-spacing:.11em;color:rgba(255,255,255,.43);white-space:nowrap}
+.story-name{text-align:center;font-size:10px;font-weight:520;letter-spacing:.11em;color:rgba(255,255,255,.43);white-space:nowrap;transition:color .6s ease}.app.story-ended .story-name{color:#fff}
 .actions{justify-self:end;display:flex;align-items:center;gap:4px}
 .tool{height:32px;border:1px solid transparent;background:transparent;color:rgba(255,255,255,.68);border-radius:9px;padding:0 9px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:580;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
 .tool:hover{background:rgba(255,255,255,.07);color:#fff}
 .tool svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.tool.primary{background:rgba(255,255,255,.94);color:#0b0b0c}
+.tool.primary{background:transparent;color:rgba(255,255,255,.68);border-color:transparent}.tool.primary:hover{background:rgba(255,255,255,.07);color:#fff}#full{width:32px;padding:0}#full span{display:none}
 
 .stage-wrap{height:calc(100dvh - 54px);min-height:520px;padding:12px 18px 18px}
 .stage{height:100%;position:relative;overflow:hidden;background:#030304;border-radius:18px;isolation:isolate;box-shadow:0 18px 70px rgba(0,0,0,.38);touch-action:pan-y}
@@ -176,10 +176,10 @@ const stage=$('#stage'),ambient=$('#ambient'),blackout=$('#blackout'),quote=$('#
 let layers=[$('#layerA'),$('#layerB')],activeLayer=0,current=0,runId=0,auto=false,touchX=0,touchY=0,touchDx=0,touchDy=0,touchStartTime=0,touchLastX=0,touchLastTime=0,touchVelocity=0,dragging=false,gestureTarget=null,gestureDir=0,gestureFrom=null,gestureTo=null,uiTimer,transitioning=false;const preloadRefs=[];
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const wait=(ms,id)=>new Promise(r=>setTimeout(()=>r(id===runId),ms));
-function setMeta(n){current=n;kind.textContent=frames[n].type;count.textContent=String(n+1).padStart(2,'0')+' / 06';ambient.style.backgroundImage='url("'+frames[n].src+'")';stage.classList.remove('end');document.querySelector('.swipe-hint').textContent='SWIPE'}
+function setMeta(n){current=n;kind.textContent=frames[n].type;count.textContent=String(n+1).padStart(2,'0')+' / 06';ambient.style.backgroundImage='url("'+frames[n].src+'")';stage.classList.remove('end');app.classList.remove('story-ended');document.querySelector('.swipe-hint').textContent='SWIPE'}
 function paintLayer(el,n){el.src=frames[n].src;el.alt=frames[n].alt}
 function clearAnim(el){el.classList.remove('swipe-in-right','swipe-in-left','swipe-out-left','swipe-out-right','auto-enter')}
-function showFinalCue(el=layers[activeLayer]){if(current!==5)return;clearAnim(el);stage.classList.add('end')}
+function showFinalCue(el=layers[activeLayer]){if(current!==5)return;clearAnim(el);stage.classList.add('end');app.classList.add('story-ended')}
 function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.removeAttribute('src');b.alt='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui();if(n===5){const id=runId;if(await wait(reduce?20:6000,id))showFinalCue(to)}}
 function ui(){stage.classList.add('ui');if(app.classList.contains('immersive'))app.classList.add('controls-visible');clearTimeout(uiTimer);uiTimer=setTimeout(()=>{stage.classList.remove('ui');app.classList.remove('controls-visible')},2200)}
@@ -425,6 +425,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.9.0 -->
+<!-- Visual Stories v1.9.1 -->
 </body>
 </html>
