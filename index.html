@@ -68,7 +68,7 @@ button{font:inherit}
 .arrow{position:absolute;z-index:12;top:50%;transform:translateY(-50%);width:38px;height:38px;border:1px solid rgba(255,255,255,.1);border-radius:50%;background:rgba(10,10,11,.38);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:rgba(255,255,255,.74);display:grid;place-items:center;opacity:0;cursor:pointer;transition:.2s}
 .stage:hover .arrow,.stage.ui .arrow{opacity:1}
 .stage.end .arrow.next{opacity:0;pointer-events:none}
-.stage.end .meta,.stage.end .swipe-hint{opacity:0}
+.stage.end .meta,.stage.end .swipe-hint{opacity:0}.stage.story-card .meta,.stage.story-card .swipe-hint,.stage.story-card .arrow{opacity:0!important;pointer-events:none}
 .end-card{position:absolute;z-index:14;left:50%;bottom:20px;transform:translate(-50%,10px);width:min(180px,calc(100% - 48px));display:grid;justify-items:center;gap:7px;opacity:0;visibility:hidden;transition:opacity .65s ease,transform .65s var(--ease),visibility .65s;pointer-events:none}
 .stage.end .end-card{opacity:1;visibility:visible;transform:translate(-50%,0);pointer-events:auto}
 .end-label{font-size:8px;font-weight:650;letter-spacing:.16em;color:rgba(255,255,255,.68);text-shadow:0 1px 8px #000}
@@ -104,7 +104,7 @@ button{font:inherit}
 .footer-brand{font-size:10px;letter-spacing:.14em;font-weight:700;color:rgba(255,255,255,.7)}
 .footer p{margin:0;max-width:660px;font-size:12px;line-height:1.55;color:rgba(255,255,255,.42)}
 .footer-note{font-size:11px;color:rgba(255,255,255,.34);white-space:nowrap}
-.immersive .topbar,.immersive .footer{display:none}.immersive .stage-wrap{height:100dvh;padding:0}.immersive .stage{height:100dvh;border-radius:0}
+.immersive .footer{display:none}.immersive .stage-wrap{height:100dvh;padding:0}.immersive .stage{height:100dvh;border-radius:0}.immersive .topbar{position:fixed;top:0;left:0;right:0;display:grid;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:opacity .28s ease,transform .28s var(--ease),visibility .28s;z-index:60;background:linear-gradient(180deg,rgba(4,4,5,.9),rgba(4,4,5,.38) 64%,transparent)}.immersive.controls-visible .topbar{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}.full-exit{display:none}.immersive .full-enter{display:none}.immersive .full-exit{display:block}
 @media(max-width:760px){
  .topbar{position:fixed;top:0;left:0;right:0;height:auto;min-height:54px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;grid-template-columns:1fr auto;background:linear-gradient(180deg,rgba(4,4,5,.88) 0,rgba(4,4,5,.44) 56%,transparent 100%);border-bottom:0;z-index:40}
  .story-name{display:none}.brand{font-size:10px;letter-spacing:.14em}.actions{gap:3px}
@@ -136,7 +136,7 @@ button{font:inherit}
 <nav class="actions" aria-label="Story controls">
 <button class="tool" id="restart" type="button" aria-label="Restart" title="Restart"><svg viewBox="0 0 24 24"><path d="M4.7 8.3A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg><span>Restart</span></button>
 <button class="tool" id="framesBtn" type="button" aria-label="All Frames"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg><span>Frames</span></button>
-<button class="tool primary" id="full" type="button" aria-label="Full View"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M4 15v5h5M20 15v5h-5"/></svg><span>Full View</span></button>
+<button class="tool primary" id="full" type="button" aria-label="Full View" title="Full View"><svg class="full-enter" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M4 15v5h5M20 15v5h-5"/></svg><svg class="full-exit" viewBox="0 0 24 24"><path d="M9 4v5H4M20 9h-5V4M4 15h5v5M15 20v-5h5"/></svg><span>Full View</span></button>
 </nav>
 </header>
 <main class="stage-wrap">
@@ -181,25 +181,103 @@ function clearAnim(el){el.classList.remove('swipe-in-right','swipe-in-left','swi
 function showFinalCue(el=layers[activeLayer]){if(current!==5)return;clearAnim(el);stage.classList.add('end')}
 function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.removeAttribute('src');b.alt='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui();if(n===5){const id=runId;if(await wait(reduce?20:6000,id))showFinalCue(to)}}
-function ui(){stage.classList.add('ui');clearTimeout(uiTimer);uiTimer=setTimeout(()=>stage.classList.remove('ui'),1300)}
-function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
+function ui(){stage.classList.add('ui');if(app.classList.contains('immersive'))app.classList.add('controls-visible');clearTimeout(uiTimer);uiTimer=setTimeout(()=>{stage.classList.remove('ui');app.classList.remove('controls-visible')},2200)}
+function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}stage.classList.remove('story-card');quote.style.transitionDuration='';quote.style.visibility='';quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function toBlack(id,ms=1000){blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';blackout.classList.add('on');return wait(reduce?20:ms,id)}
 async function fromBlack(n,id,ms=650){const next=layers[1-activeLayer],old=layers[activeLayer];clearAnim(next);clearAnim(old);paintLayer(next,n);next.classList.add('active');old.classList.remove('active');activeLayer=1-activeLayer;setMeta(n);blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';requestAnimationFrame(()=>blackout.classList.remove('on'));return wait(reduce?20:ms,id)}
+async function mergeQuoteToAfter(n,id,ms=3000){
+  const next=layers[1-activeLayer],old=layers[activeLayer];
+  clearAnim(next);clearAnim(old);
+  paintLayer(next,n);
+  next.classList.add('active');
+  old.classList.remove('active');
+  activeLayer=1-activeLayer;
+  setMeta(n);
+  stage.classList.add('story-card');
+  blackout.style.transitionDuration='.01ms';
+  blackout.classList.remove('on');
+
+  /* AFTER is already loaded behind the title card.
+     Fade only the title card, so the new frame slowly merges through it. */
+  quote.style.visibility='visible';
+  quote.style.transitionDuration=reduce?'.01ms':ms+'ms';
+  quote.setAttribute('aria-hidden','true');
+  requestAnimationFrame(()=>quote.classList.remove('show'));
+
+  if(!(await wait(reduce?20:ms,id)))return false;
+  quote.style.visibility='';
+  quote.style.transitionDuration='';
+  stage.classList.remove('story-card');
+  return true;
+}
 async function play(){stop();const id=runId;auto=true;showInstant(0);blackout.classList.remove('on');
-for(let i=0;i<3;i++){if(!(await wait(4000,id)))return;if(!(await toBlack(id,1000)))return;if(i<2&&!(await fromBlack(i+1,id,650)))return}
-quote.classList.add('show');quote.setAttribute('aria-hidden','false');blackout.style.transitionDuration=reduce?'.01ms':'700ms';blackout.classList.remove('on');if(!(await wait(reduce?20:700,id)))return;if(!(await wait(6000,id)))return;
-blackout.style.transitionDuration='.01ms';blackout.classList.add('on');if(!(await wait(reduce?20:60,id)))return;quote.classList.remove('show');quote.setAttribute('aria-hidden','true');if(!(await wait(reduce?20:180,id)))return;
-for(let i=3;i<6;i++){const next=layers[1-activeLayer],old=layers[activeLayer];clearAnim(next);clearAnim(old);paintLayer(next,i);next.classList.add('active','auto-enter');old.classList.remove('active');activeLayer=1-activeLayer;setMeta(i);blackout.style.transitionDuration=reduce?'.01ms':'3000ms';requestAnimationFrame(()=>blackout.classList.remove('on'));if(!(await wait(reduce?20:3000,id)))return;clearAnim(next);if(!(await wait(6000,id)))return;if(i===5){auto=false;showFinalCue(next);return}if(!(await toBlack(id,1200)))return}}
+for(let i=0;i<3;i++){
+  if(!(await wait(4000,id)))return;
+  if(!(await toBlack(id,1000)))return;
+  if(i<2&&!(await fromBlack(i+1,id,650)))return;
+}
+
+stage.classList.add('story-card');
+quote.style.transitionDuration=reduce?'.01ms':'700ms';
+quote.classList.add('show');
+quote.setAttribute('aria-hidden','false');
+blackout.style.transitionDuration=reduce?'.01ms':'700ms';
+blackout.classList.remove('on');
+if(!(await wait(reduce?20:700,id)))return;
+if(!(await wait(6000,id)))return;
+
+/* 3s continuous merge: title fades out while AFTER 01 appears underneath. */
+if(!(await mergeQuoteToAfter(3,id,3000)))return;
+if(!(await wait(6000,id)))return;
+
+/* AFTER 02/03: one clean 3s reveal from black — no second opacity animation. */
+for(let i=4;i<6;i++){
+  if(!(await toBlack(id,1200)))return;
+  const next=layers[1-activeLayer],old=layers[activeLayer];
+  clearAnim(next);clearAnim(old);
+  paintLayer(next,i);
+  next.classList.add('active');
+  old.classList.remove('active');
+  activeLayer=1-activeLayer;
+  setMeta(i);
+  blackout.style.transitionDuration=reduce?'.01ms':'3000ms';
+  requestAnimationFrame(()=>blackout.classList.remove('on'));
+  if(!(await wait(reduce?20:3000,id)))return;
+  if(!(await wait(6000,id)))return;
+  if(i===5){auto=false;showFinalCue(next);return}
+}}
 function next(){if(current===5){showFinalCue();return}manualTransition(current+1,1)}function prev(){manualTransition(current-1,-1)}
 frames.forEach((f,i)=>{const b=document.createElement('button');b.className='card';b.type='button';const t=document.createElement('div');t.className='thumb';t.style.backgroundImage='url("'+f.src+'")';const s=document.createElement('span');s.textContent=f.type+' '+String((i%3)+1).padStart(2,'0');b.append(t,s);b.onclick=()=>{gallery.close();manualTransition(i,i>current?1:-1)};grid.appendChild(b)});
 $('#restart').onclick=play;$('#endReplay').onclick=play;$('#home').onclick=e=>{e.preventDefault();play()};$('#prev').onclick=prev;$('#next').onclick=next;$('#framesBtn').onclick=()=>gallery.showModal();$('#close').onclick=()=>gallery.close();gallery.onclick=e=>{if(e.target===gallery)gallery.close()};
-$('#full').onclick=async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen?.();app.classList.add('immersive')}else{await document.exitFullscreen?.();app.classList.remove('immersive')}}catch{app.classList.toggle('immersive')}ui()};
-document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)app.classList.remove('immersive')});
+const fullBtn=$('#full');
+function syncFullButton(){
+  const on=app.classList.contains('immersive')||!!document.fullscreenElement;
+  fullBtn.setAttribute('aria-label',on?'Normal View':'Full View');
+  fullBtn.title=on?'Normal View':'Full View';
+  const label=fullBtn.querySelector('span');if(label)label.textContent=on?'Normal View':'Full View';
+}
+fullBtn.onclick=async()=>{
+  const on=app.classList.contains('immersive')||!!document.fullscreenElement;
+  if(!on){
+    try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch{}
+    app.classList.add('immersive','controls-visible');
+  }else{
+    try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen()}catch{}
+    app.classList.remove('immersive','controls-visible');
+  }
+  syncFullButton();ui();
+};
+document.addEventListener('fullscreenchange',()=>{
+  if(document.fullscreenElement)app.classList.add('immersive');
+  else app.classList.remove('immersive','controls-visible');
+  syncFullButton();
+});
 addEventListener('keydown',e=>{if(gallery.open)return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
 stage.addEventListener('pointermove',ui,{passive:true});
-stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;dragging=false;ui()},{passive:true});
+stage.addEventListener('click',e=>{if(app.classList.contains('immersive')&&!e.target.closest('button'))ui()});
+stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;dragging=false;if(!app.classList.contains('immersive'))ui()},{passive:true});
 stage.addEventListener('touchmove',e=>{if(transitioning)return;const t=e.changedTouches[0];touchDx=t.clientX-touchX;touchDy=t.clientY-touchY;if(Math.abs(touchDx)>10&&Math.abs(touchDx)>Math.abs(touchDy)*1.15){if(auto)stop(true);dragging=true;const a=layers[activeLayer],px=Math.max(-26,Math.min(26,touchDx*.09));a.style.transition='none';a.style.transform='translate3d('+px+'px,0,0)';a.style.opacity=String(Math.max(.88,1-Math.abs(touchDx)/1000))}},{passive:true});
-stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY,a=layers[activeLayer];a.style.transition=reduce?'none':'transform .24s var(--ease),opacity .24s ease';a.style.transform='translate3d(0,0,0)';a.style.opacity='1';setTimeout(()=>{a.style.transition=''},reduce?20:250);dragging=false;if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15)(dx<0?next:prev)()},{passive:true});
+stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY,a=layers[activeLayer];a.style.transition=reduce?'none':'transform .24s var(--ease),opacity .24s ease';a.style.transform='translate3d(0,0,0)';a.style.opacity='1';setTimeout(()=>{a.style.transition=''},reduce?20:250);dragging=false;if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15){(dx<0?next:prev)()}else if(Math.abs(dx)<12&&Math.abs(dy)<12&&app.classList.contains('immersive')){ui()}},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&auto)stop()});
 function loadAsset(f,index,attempt=0){return new Promise(resolve=>{const im=new Image();im.decoding='async';let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);if(ok){preloadRefs[index]=im;resolve(true)}else if(attempt<1){loadAsset(f,index,attempt+1).then(resolve)}else resolve(false)};const timer=setTimeout(()=>finish(false),12000);im.onload=async()=>{try{if(im.decode)await im.decode()}catch{}finish(true)};im.onerror=()=>finish(false);im.src=f.src+(attempt?'?retry=1':'')})}
 async function preloadAssets(){preloader.classList.remove('done');preloadFill.style.width='0%';preloadCount.style.color='';preloadCount.textContent='0%';let settled=0;const results=await Promise.all(frames.map((f,i)=>loadAsset(f,i).then(ok=>{settled++;const pct=Math.round((settled/frames.length)*100);preloadFill.style.width=pct+'%';preloadCount.textContent=pct+'%';return ok})));return results.every(Boolean)}
@@ -208,6 +286,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.7.1 -->
+<!-- Visual Stories v1.8.0 -->
 </body>
 </html>
