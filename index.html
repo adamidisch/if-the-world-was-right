@@ -55,6 +55,7 @@ button{font:inherit}
 .blackout.on{opacity:1}
 .quote{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 22% 30%,rgba(76,137,157,.23),transparent 34%),radial-gradient(circle at 79% 68%,rgba(192,111,67,.18),transparent 32%),radial-gradient(circle at 56% 50%,rgba(115,113,158,.13),transparent 42%),#07090d;opacity:0;visibility:hidden;transition:opacity .9s var(--ease),visibility .9s}
 .quote.show{opacity:1;visibility:visible}
+.quote.merge-out{opacity:0;visibility:visible;transition:opacity 3s cubic-bezier(.22,.78,.22,1)}
 .quote-inner{width:min(780px,calc(100% - 48px));text-align:center}
 .quote h1{margin:0;font-family:"Avenir Next","Segoe UI Variable Display","Segoe UI",Arial,sans-serif;font-size:clamp(30px,3.8vw,46px);line-height:1.12;letter-spacing:.035em;word-spacing:.09em;font-weight:620;text-wrap:balance;color:#edf1ee;background-image:linear-gradient(108deg,#f3eee3 8%,#aac7d0 92%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:.2px rgba(238,235,220,.2);filter:drop-shadow(0 8px 22px rgba(0,0,0,.34))}
 .quote-lead{max-width:620px;margin:20px auto 0;font-size:16px;line-height:1.5;letter-spacing:-.006em;color:rgba(255,255,255,.72);text-wrap:balance}
@@ -172,7 +173,7 @@ const frames=[
 {src:'assets/after-03.webp',type:'AFTER',alt:'After — view 3'}];
 const $=s=>document.querySelector(s);
 const stage=$('#stage'),ambient=$('#ambient'),blackout=$('#blackout'),quote=$('#quote'),kind=$('#kind'),count=$('#count'),gallery=$('#gallery'),grid=$('#grid'),app=$('#app'),preloader=$('#preloader'),preloadFill=$('#preloadFill'),preloadCount=$('#preloadCount');
-let layers=[$('#layerA'),$('#layerB')],activeLayer=0,current=0,runId=0,auto=false,touchX=0,touchY=0,touchDx=0,touchDy=0,dragging=false,uiTimer,transitioning=false;const preloadRefs=[];
+let layers=[$('#layerA'),$('#layerB')],activeLayer=0,current=0,runId=0,auto=false,touchX=0,touchY=0,touchDx=0,touchDy=0,touchStartTime=0,touchLastX=0,touchLastTime=0,touchVelocity=0,dragging=false,gestureTarget=null,gestureDir=0,gestureFrom=null,gestureTo=null,uiTimer,transitioning=false;const preloadRefs=[];
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const wait=(ms,id)=>new Promise(r=>setTimeout(()=>r(id===runId),ms));
 function setMeta(n){current=n;kind.textContent=frames[n].type;count.textContent=String(n+1).padStart(2,'0')+' / 06';ambient.style.backgroundImage='url("'+frames[n].src+'")';stage.classList.remove('end');document.querySelector('.swipe-hint').textContent='SWIPE'}
@@ -182,12 +183,14 @@ function showFinalCue(el=layers[activeLayer]){if(current!==5)return;clearAnim(el
 function showInstant(n){n=Math.max(0,Math.min(5,n));const a=layers[activeLayer],b=layers[1-activeLayer];clearAnim(a);clearAnim(b);paintLayer(a,n);a.classList.add('active');b.classList.remove('active');b.removeAttribute('src');b.alt='';setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
 async function manualTransition(n,direction){n=Math.max(0,Math.min(5,n));if(n===current||transitioning)return;transitioning=true;stop(true);const from=layers[activeLayer],to=layers[1-activeLayer];clearAnim(from);clearAnim(to);paintLayer(to,n);to.classList.add('active',direction>0?'swipe-in-right':'swipe-in-left');from.classList.add(direction>0?'swipe-out-left':'swipe-out-right');setMeta(n);quote.classList.remove('show');quote.setAttribute('aria-hidden','true');await new Promise(r=>setTimeout(r,reduce?20:530));clearAnim(from);clearAnim(to);from.classList.remove('active');to.classList.add('active');activeLayer=1-activeLayer;transitioning=false;ui();if(n===5){const id=runId;if(await wait(reduce?20:6000,id))showFinalCue(to)}}
 function ui(){stage.classList.add('ui');if(app.classList.contains('immersive'))app.classList.add('controls-visible');clearTimeout(uiTimer);uiTimer=setTimeout(()=>{stage.classList.remove('ui');app.classList.remove('controls-visible')},2200)}
-function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}stage.classList.remove('story-card');quote.style.transitionDuration='';quote.style.visibility='';quote.classList.remove('show');quote.setAttribute('aria-hidden','true')}
+function stop(resetOverlay=true){runId++;auto=false;if(resetOverlay){blackout.style.transitionDuration='.01ms';blackout.classList.remove('on')}stage.classList.remove('story-card');quote.style.transitionDuration='';quote.style.visibility='';quote.classList.remove('show','merge-out');quote.setAttribute('aria-hidden','true')}
 async function toBlack(id,ms=1000){blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';blackout.classList.add('on');return wait(reduce?20:ms,id)}
 async function fromBlack(n,id,ms=650){const next=layers[1-activeLayer],old=layers[activeLayer];clearAnim(next);clearAnim(old);paintLayer(next,n);next.classList.add('active');old.classList.remove('active');activeLayer=1-activeLayer;setMeta(n);blackout.style.transitionDuration=reduce?'.01ms':ms+'ms';requestAnimationFrame(()=>blackout.classList.remove('on'));return wait(reduce?20:ms,id)}
 async function mergeQuoteToAfter(n,id,ms=3000){
   const next=layers[1-activeLayer],old=layers[activeLayer];
   clearAnim(next);clearAnim(old);
+
+  /* Prepare AFTER completely underneath the opaque story card. */
   paintLayer(next,n);
   next.classList.add('active');
   old.classList.remove('active');
@@ -197,16 +200,17 @@ async function mergeQuoteToAfter(n,id,ms=3000){
   blackout.style.transitionDuration='.01ms';
   blackout.classList.remove('on');
 
-  /* AFTER is already loaded behind the title card.
-     Fade only the title card, so the new frame slowly merges through it. */
-  quote.style.visibility='visible';
-  quote.style.transitionDuration=reduce?'.01ms':ms+'ms';
+  /* One transition only: the story card dissolves for 3s.
+     The AFTER frame is already stable underneath, so there is no flash. */
+  quote.style.transitionDuration='';
+  quote.style.visibility='';
   quote.setAttribute('aria-hidden','true');
-  requestAnimationFrame(()=>quote.classList.remove('show'));
+  void quote.offsetWidth;
+  quote.classList.add('merge-out');
 
   if(!(await wait(reduce?20:ms,id)))return false;
-  quote.style.visibility='';
-  quote.style.transitionDuration='';
+
+  quote.classList.remove('show','merge-out');
   stage.classList.remove('story-card');
   return true;
 }
@@ -251,33 +255,168 @@ frames.forEach((f,i)=>{const b=document.createElement('button');b.className='car
 $('#restart').onclick=play;$('#endReplay').onclick=play;$('#home').onclick=e=>{e.preventDefault();play()};$('#prev').onclick=prev;$('#next').onclick=next;$('#framesBtn').onclick=()=>gallery.showModal();$('#close').onclick=()=>gallery.close();gallery.onclick=e=>{if(e.target===gallery)gallery.close()};
 const fullBtn=$('#full');
 function syncFullButton(){
-  const on=app.classList.contains('immersive')||!!document.fullscreenElement;
+  const on=app.classList.contains('immersive');
   fullBtn.setAttribute('aria-label',on?'Normal View':'Full View');
   fullBtn.title=on?'Normal View':'Full View';
-  const label=fullBtn.querySelector('span');if(label)label.textContent=on?'Normal View':'Full View';
+  const label=fullBtn.querySelector('span');
+  if(label)label.textContent=on?'Normal View':'Full View';
 }
-fullBtn.onclick=async()=>{
-  const on=app.classList.contains('immersive')||!!document.fullscreenElement;
-  if(!on){
-    try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch{}
-    app.classList.add('immersive','controls-visible');
+function setImmersive(on){
+  app.classList.toggle('immersive',on);
+  if(on){
+    app.classList.add('controls-visible');
+    ui();
   }else{
-    try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen()}catch{}
-    app.classList.remove('immersive','controls-visible');
+    app.classList.remove('controls-visible');
   }
-  syncFullButton();ui();
-};
-document.addEventListener('fullscreenchange',()=>{
-  if(document.fullscreenElement)app.classList.add('immersive');
-  else app.classList.remove('immersive','controls-visible');
   syncFullButton();
-});
+}
+fullBtn.onclick=e=>{
+  e.preventDefault();
+  e.stopPropagation();
+  setImmersive(!app.classList.contains('immersive'));
+};
+syncFullButton();
+function clearGestureInline(el){
+  if(!el)return;
+  el.style.transition='';
+  el.style.transform='';
+  el.style.opacity='';
+}
+function preparePhotoGesture(dir){
+  const target=Math.max(0,Math.min(5,current+dir));
+  if(target===current)return false;
+
+  if(auto)stop(true);
+
+  gestureDir=dir;
+  gestureTarget=target;
+  gestureFrom=layers[activeLayer];
+  gestureTo=layers[1-activeLayer];
+
+  clearAnim(gestureFrom);
+  clearAnim(gestureTo);
+  clearGestureInline(gestureFrom);
+  clearGestureInline(gestureTo);
+
+  paintLayer(gestureTo,target);
+  gestureTo.classList.add('active');
+
+  const w=stage.clientWidth||window.innerWidth;
+  gestureFrom.style.transition='none';
+  gestureTo.style.transition='none';
+  gestureFrom.style.transform='translate3d(0,0,0)';
+  gestureTo.style.transform='translate3d('+(dir>0?w:-w)+'px,0,0)';
+  gestureFrom.style.opacity='1';
+  gestureTo.style.opacity='1';
+  return true;
+}
+function movePhotoGesture(dx){
+  if(!gestureTarget)return;
+  const w=stage.clientWidth||window.innerWidth;
+  let x=dx;
+  if(gestureDir>0)x=Math.min(0,x);
+  else x=Math.max(0,x);
+
+  /* Slight resistance if the finger reverses past the starting point. */
+  if((gestureDir>0&&dx>0)||(gestureDir<0&&dx<0))x=dx*.18;
+
+  gestureFrom.style.transform='translate3d('+x+'px,0,0)';
+  gestureTo.style.transform='translate3d('+((gestureDir>0?w:-w)+x)+'px,0,0)';
+}
+async function finishPhotoGesture(commit){
+  if(!gestureTarget)return;
+
+  transitioning=true;
+  const from=gestureFrom,to=gestureTo,target=gestureTarget,dir=gestureDir;
+  const w=stage.clientWidth||window.innerWidth;
+  const duration=reduce?20:320;
+  const ease='cubic-bezier(.22,.72,.22,1)';
+
+  from.style.transition='transform '+duration+'ms '+ease;
+  to.style.transition='transform '+duration+'ms '+ease;
+
+  requestAnimationFrame(()=>{
+    from.style.transform='translate3d('+(commit?(dir>0?-w:w):0)+'px,0,0)';
+    to.style.transform='translate3d('+(commit?0:(dir>0?w:-w))+'px,0,0)';
+  });
+
+  await new Promise(r=>setTimeout(r,duration+24));
+
+  if(commit){
+    from.classList.remove('active');
+    activeLayer=1-activeLayer;
+    setMeta(target);
+    clearGestureInline(from);
+    clearGestureInline(to);
+    to.classList.add('active');
+
+    if(target===5){
+      const id=runId;
+      if(await wait(reduce?20:6000,id))showFinalCue(to);
+    }
+  }else{
+    to.classList.remove('active');
+    to.removeAttribute('src');
+    to.alt='';
+    clearGestureInline(from);
+    clearGestureInline(to);
+    from.classList.add('active');
+  }
+
+  gestureTarget=null;gestureDir=0;gestureFrom=null;gestureTo=null;
+  dragging=false;transitioning=false;ui();
+}
 addEventListener('keydown',e=>{if(gallery.open)return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
-stage.addEventListener('pointermove',ui,{passive:true});
+stage.addEventListener('pointermove',e=>{if(e.pointerType!=='touch')ui()},{passive:true});
 stage.addEventListener('click',e=>{if(app.classList.contains('immersive')&&!e.target.closest('button'))ui()});
-stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;dragging=false;if(!app.classList.contains('immersive'))ui()},{passive:true});
-stage.addEventListener('touchmove',e=>{if(transitioning)return;const t=e.changedTouches[0];touchDx=t.clientX-touchX;touchDy=t.clientY-touchY;if(Math.abs(touchDx)>10&&Math.abs(touchDx)>Math.abs(touchDy)*1.15){if(auto)stop(true);dragging=true;const a=layers[activeLayer],px=Math.max(-26,Math.min(26,touchDx*.09));a.style.transition='none';a.style.transform='translate3d('+px+'px,0,0)';a.style.opacity=String(Math.max(.88,1-Math.abs(touchDx)/1000))}},{passive:true});
-stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY,a=layers[activeLayer];a.style.transition=reduce?'none':'transform .24s var(--ease),opacity .24s ease';a.style.transform='translate3d(0,0,0)';a.style.opacity='1';setTimeout(()=>{a.style.transition=''},reduce?20:250);dragging=false;if(Math.abs(dx)>38&&Math.abs(dx)>Math.abs(dy)*1.15){(dx<0?next:prev)()}else if(Math.abs(dx)<12&&Math.abs(dy)<12&&app.classList.contains('immersive')){ui()}},{passive:true});
+stage.addEventListener('touchstart',e=>{
+  if(transitioning||quote.classList.contains('show'))return;
+  const t=e.changedTouches[0],now=performance.now();
+  touchX=t.clientX;touchY=t.clientY;touchDx=0;touchDy=0;
+  touchStartTime=now;touchLastX=t.clientX;touchLastTime=now;touchVelocity=0;
+  dragging=false;gestureTarget=null;gestureDir=0;
+  if(!app.classList.contains('immersive'))ui();
+},{passive:true});
+
+stage.addEventListener('touchmove',e=>{
+  if(transitioning||quote.classList.contains('show'))return;
+  const t=e.changedTouches[0],now=performance.now();
+  touchDx=t.clientX-touchX;touchDy=t.clientY-touchY;
+
+  const dt=Math.max(1,now-touchLastTime);
+  touchVelocity=(t.clientX-touchLastX)/dt;
+  touchLastX=t.clientX;touchLastTime=now;
+
+  if(!dragging){
+    if(Math.abs(touchDx)<10||Math.abs(touchDx)<=Math.abs(touchDy)*1.15)return;
+    const dir=touchDx<0?1:-1;
+    if(!preparePhotoGesture(dir))return;
+    dragging=true;
+  }
+  movePhotoGesture(touchDx);
+},{passive:true});
+
+stage.addEventListener('touchend',async e=>{
+  if(transitioning)return;
+  const t=e.changedTouches[0];
+  const dx=t.clientX-touchX,dy=t.clientY-touchY;
+  const elapsed=Math.max(1,performance.now()-touchStartTime);
+
+  if(dragging&&gestureTarget){
+    const w=stage.clientWidth||window.innerWidth;
+    const distanceCommit=Math.abs(dx)>Math.min(92,w*.18);
+    const velocityCommit=(-gestureDir*touchVelocity)>.38;
+    await finishPhotoGesture(distanceCommit||velocityCommit);
+    return;
+  }
+
+  if(Math.abs(dx)<12&&Math.abs(dy)<12&&app.classList.contains('immersive'))ui();
+},{passive:true});
+
+stage.addEventListener('touchcancel',async()=>{
+  if(dragging&&gestureTarget&&!transitioning)await finishPhotoGesture(false);
+},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&auto)stop()});
 function loadAsset(f,index,attempt=0){return new Promise(resolve=>{const im=new Image();im.decoding='async';let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);if(ok){preloadRefs[index]=im;resolve(true)}else if(attempt<1){loadAsset(f,index,attempt+1).then(resolve)}else resolve(false)};const timer=setTimeout(()=>finish(false),12000);im.onload=async()=>{try{if(im.decode)await im.decode()}catch{}finish(true)};im.onerror=()=>finish(false);im.src=f.src+(attempt?'?retry=1':'')})}
 async function preloadAssets(){preloader.classList.remove('done');preloadFill.style.width='0%';preloadCount.style.color='';preloadCount.textContent='0%';let settled=0;const results=await Promise.all(frames.map((f,i)=>loadAsset(f,i).then(ok=>{settled++;const pct=Math.round((settled/frames.length)*100);preloadFill.style.width=pct+'%';preloadCount.textContent=pct+'%';return ok})));return results.every(Boolean)}
@@ -286,6 +425,6 @@ async function boot(){if(booting)return;booting=true;const ok=await preloadAsset
 preloader.onclick=()=>{if(!preloader.classList.contains('done')&&!booting)boot()};
 boot();
 </script>
-<!-- Visual Stories v1.8.0 -->
+<!-- Visual Stories v1.9.0 -->
 </body>
 </html>
